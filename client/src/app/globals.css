@@ -23,6 +23,7 @@
 
   /* Primary (purple) */
   --primary: #9564DD;
+  --primary-strong: #8d58d7;
   --primary-foreground: #ffffff;
 
   /* Secondary (black buttons like "Register") */
@@ -140,6 +141,7 @@
   --color-popover-foreground: var(--popover-foreground);
 
   --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
   --color-primary-foreground: var(--primary-foreground);
 
   --color-secondary: var(--secondary);

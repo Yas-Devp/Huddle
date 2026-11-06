@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -29,7 +30,12 @@ const navLinkClass =
   "rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  if (pathname === "/login" || pathname === "/register") {
+    return null;
+  }
 
   return (
     <header className="w-full px-4 pt-6 sm:px-6">
