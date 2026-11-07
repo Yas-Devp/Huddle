@@ -1,0 +1,175 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ---------------------------------------------------------------
+// USERS
+// ---------------------------------------------------------------
+model User {
+  id        Int      @id @default(autoincrement())
+  nom       String
+  prenom    String
+  email     String   @unique
+  password  String
+  telephone String?
+  role      String   @default("user")
+  createdAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("update_at")
+
+  ownedWorkspaces Workspace[] @relation("WorkspaceOwner")
+  members         Member[]
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------
+// MAPS
+// ---------------------------------------------------------------
+model WorkspaceMap {
+  id        Int      @id @default(autoincrement())
+  nom       String
+  url       String
+  mapWidth  Int      @map("map_width")
+  mapHeight Int      @map("map_height")
+  createdAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("update_at")
+
+  workspaces Workspace[]
+
+  @@map("maps")
+}
+
+// ---------------------------------------------------------------
+// WORKSPACES
+// ---------------------------------------------------------------
+model Workspace {
+  id          Int      @id @default(autoincrement())
+  nom         String
+  description String?
+  ownerId     Int      @map("owner_id")
+  mapId       Int?     @map("map_id")
+  createdAt   DateTime @default(now()) @map("create_at")
+  updatedAt   DateTime @updatedAt @map("update_at")
+
+  owner         User                      @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  map           WorkspaceMap?             @relation(fields: [mapId], references: [id])
+  members       Member[]
+  conversations Conversation[]
+  messages      Message[]
+  invitations   ConversationInvitation[]
+  participants  ConversationParticipant[]
+
+  @@map("workspaces")
+}
+
+// ---------------------------------------------------------------
+// MEMBERS (un utilisateur dans un workspace)
+// ---------------------------------------------------------------
+model Member {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  workspaceId Int      @map("workspace_id")
+  role        String   @default("member")
+  posX        Float    @map("pos_x")
+  posY        Float    @map("pos_y")
+  createdAt   DateTime @default(now()) @map("create_at")
+  updatedAt   DateTime @updatedAt @map("update_at")
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  conversationsCreated Conversation[]            @relation("ConversationCreator")
+  messages             Message[]
+  invitationsSent      ConversationInvitation[]  @relation("InviterMember")
+  invitationsReceived  ConversationInvitation[]  @relation("InviteeMember")
+  participations       ConversationParticipant[]
+
+  @@unique([userId, workspaceId])
+  @@map("members")
+}
+
+// ---------------------------------------------------------------
+// CONVERSATIONS
+// ---------------------------------------------------------------
+model Conversation {
+  id          Int       @id @default(autoincrement())
+  createdById Int       @map("created_by_id")
+  workspaceId Int       @map("workspace_id")
+  type        String
+  status      String    @default("active")
+  startedAt   DateTime  @default(now()) @map("started_at")
+  endedAt     DateTime? @map("ended_at")
+
+  createdBy    Member                    @relation("ConversationCreator", fields: [createdById], references: [id])
+  workspace    Workspace                 @relation(fields: [workspaceId], references: [id])
+  messages     Message[]
+  invitations  ConversationInvitation[]
+  participants ConversationParticipant[]
+
+  @@map("conversations")
+}
+
+// ---------------------------------------------------------------
+// MESSAGES
+// ---------------------------------------------------------------
+model Message {
+  id             Int      @id @default(autoincrement())
+  conversationId Int      @map("conversation_id")
+  workspaceId    Int      @map("workspace_id")
+  senderMemberId Int      @map("sender_member_id")
+  content        String
+  createdAt      DateTime @default(now()) @map("create_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  workspace    Workspace    @relation(fields: [workspaceId], references: [id])
+  sender       Member       @relation(fields: [senderMemberId], references: [id])
+
+  @@index([conversationId])
+  @@map("messages")
+}
+
+// ---------------------------------------------------------------
+// CONVERSATION_INVITATIONS
+// ---------------------------------------------------------------
+model ConversationInvitation {
+  id              Int       @id @default(autoincrement())
+  conversationId  Int       @map("conversation_id")
+  workspaceId     Int       @map("workspace_id")
+  inviterMemberId Int       @map("inviter_member_id")
+  inviteeMemberId Int       @map("invitee_member_id")
+  status          String    @default("pending")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  respondedAt     DateTime? @map("responded_at")
+  expiresAt       DateTime? @map("expires_at")
+
+  conversation  Conversation @relation(fields: [conversationId], references: [id])
+  workspace     Workspace    @relation(fields: [workspaceId], references: [id])
+  inviterMember Member       @relation("InviterMember", fields: [inviterMemberId], references: [id])
+  inviteeMember Member       @relation("InviteeMember", fields: [inviteeMemberId], references: [id])
+
+  @@map("conversation_invitations")
+}
+
+// ---------------------------------------------------------------
+// CONVERSATION_PARTICIPANTS
+// ---------------------------------------------------------------
+model ConversationParticipant {
+  id             Int       @id @default(autoincrement())
+  conversationId Int       @map("conversation_id")
+  workspaceId    Int       @map("workspace_id")
+  memberId       Int       @map("member_id")
+  joinedAt       DateTime  @default(now()) @map("joined_at")
+  leftAt         DateTime? @map("left_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  workspace    Workspace    @relation(fields: [workspaceId], references: [id])
+  member       Member       @relation(fields: [memberId], references: [id])
+
+  @@unique([conversationId, memberId])
+  @@map("conversation_participants")
+}
