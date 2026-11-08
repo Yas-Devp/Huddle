@@ -5,4 +5,5 @@ PORT=5000
 
 ## CMD YOU NEED TO USE
 
-npx prisma migrate deploy
+npm run db:generate
+npm run db:deploy
