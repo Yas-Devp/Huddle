@@ -7,7 +7,12 @@ import { useForm } from "react-hook-form";
 
 import PasswordField from "@/components/auth/password-field";
 import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { registerSchema } from "@/lib/validations/auth";
@@ -36,7 +41,7 @@ export default function RegisterForm() {
     setStatus("");
     await new Promise((resolve) => setTimeout(resolve, 1200));
     setStatus(
-      "Demo mode — your details were validated on the client, but account creation is not connected to a backend yet."
+      "Demo mode — your details were validated on the client, but account creation is not connected to a backend yet.",
     );
   }
 
@@ -47,8 +52,8 @@ export default function RegisterForm() {
           Welcome <span aria-hidden="true">👋</span>
         </h1>
         <p className="text-sm leading-6 text-muted-foreground sm:text-base">
-          Today is a new day. It&apos;s your day. You shape it. Create an account
-          to start meeting with your team.
+          Today is a new day. It&apos;s your day. You shape it. Create an
+          account to start meeting with your team.
         </p>
       </div>
 

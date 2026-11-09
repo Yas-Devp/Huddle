@@ -1,7 +1,8 @@
 import { Inter } from "next/font/google";
 
-import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/components/context/auth";
+import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 
@@ -25,15 +26,17 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Navbar />
-          {children}
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+          <Toaster position="top-center" />
+        </AuthProvider>
       </body>
     </html>
   );

@@ -6,7 +6,12 @@ import { prisma } from "./lib/prisma.js";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    baseURL: "http://localhost:5000",
+    withCredentials: true,
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -25,8 +30,8 @@ app.get("/", async (req, res, next) => {
           select: {
             nom: true,
             description: true,
-            mapId: true
-          }
+            mapId: true,
+          },
         },
         user: {
           select: {

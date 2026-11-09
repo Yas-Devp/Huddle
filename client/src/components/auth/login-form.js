@@ -17,10 +17,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { loginSchema } from "@/lib/validations/auth";
+import { useAuth } from "@/components/context/auth";
 
 const inputClassName = "h-11 rounded-xl border-border bg-muted/50 px-3.5";
 export default function LoginForm() {
   const [status, setStatus] = useState("");
+
+  const { isAuthenticated, checkAuth, login } = useAuth();
 
   const {
     control,
@@ -37,13 +40,16 @@ export default function LoginForm() {
     },
   });
 
-  async function onSubmit() {
-    setStatus("");
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    setStatus(
-      "Demo mode — your details were validated on the client, but sign-in is not connected to a backend yet.",
-    );
-  }
+  const onSubmit = async (value) => {
+    try {
+      const data = await login(value);
+      console.log("Login successful:", data);
+      setStatus("Login successful!");
+    } catch (error) {
+      console.error("Login failed:", error);
+      setStatus("Login failed. Please check your credentials.");
+    }
+  };
 
   return (
     <div>
