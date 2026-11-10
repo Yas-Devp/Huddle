@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useAuth } from "@/components/context/auth";
 
 import PasswordField from "@/components/auth/password-field";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import { registerSchema } from "@/lib/validations/auth";
 const inputClassName = "h-11 rounded-xl border-border bg-muted/50 px-3.5";
 
 export default function RegisterForm() {
+  const { signup } = useAuth();
   const [status, setStatus] = useState("");
 
   const {
@@ -37,13 +39,23 @@ export default function RegisterForm() {
     },
   });
 
-  async function onSubmit() {
+  const onSubmit = async (value) => {
     setStatus("");
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    setStatus(
-      "Demo mode — your details were validated on the client, but account creation is not connected to a backend yet.",
-    );
-  }
+    try {
+      const data = await signup({
+        nom: value.nom,
+        prenom: value.prenom,
+        telephone: value.phone,
+        email: value.email,
+        password: value.password,
+      });
+      console.log("Signup successful:", data);
+      setStatus("Signup successful!");
+    } catch (error) {
+      console.error("Signup failed:", error);
+      setStatus("Signup failed. Please check your credentials.");
+    }
+  };
 
   return (
     <div>
@@ -59,23 +71,40 @@ export default function RegisterForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-8">
         <FieldGroup className="gap-5">
-          <Field data-invalid={Boolean(errors.username)}>
-            <FieldLabel htmlFor="username">Username</FieldLabel>
-            <Input
-              id="username"
-              type="text"
-              autoComplete="username"
-              placeholder="yourname"
-              spellCheck={false}
-              aria-invalid={Boolean(errors.username)}
-              aria-describedby={errors.username ? "username-error" : undefined}
-              className={inputClassName}
-              {...register("username")}
-            />
-            <FieldError id="username-error">
-              {errors.username?.message}
-            </FieldError>
-          </Field>
+          <FieldGroup className="flex flex-row gap-5">
+            <Field data-invalid={Boolean(errors.nom)}>
+              <FieldLabel htmlFor="nom">Nom</FieldLabel>
+              <Input
+                id="nom"
+                type="text"
+                autoComplete="nom"
+                placeholder="yourname"
+                spellCheck={false}
+                aria-invalid={Boolean(errors.nom)}
+                aria-describedby={errors.nom ? "nom-error" : undefined}
+                className={inputClassName}
+                {...register("nom")}
+              />
+              <FieldError id="nom-error">{errors.nom?.message}</FieldError>
+            </Field>
+            <Field data-invalid={Boolean(errors.prenom)}>
+              <FieldLabel htmlFor="prenom">Prénom</FieldLabel>
+              <Input
+                id="prenom"
+                type="text"
+                autoComplete="prenom"
+                placeholder="yourprenom"
+                spellCheck={false}
+                aria-invalid={Boolean(errors.prenom)}
+                aria-describedby={errors.prenom ? "prenom-error" : undefined}
+                className={inputClassName}
+                {...register("prenom")}
+              />
+              <FieldError id="prenom-error">
+                {errors.prenom?.message}
+              </FieldError>
+            </Field>
+          </FieldGroup>
 
           <Field data-invalid={Boolean(errors.email)}>
             <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -93,23 +122,41 @@ export default function RegisterForm() {
             <FieldError id="email-error">{errors.email?.message}</FieldError>
           </Field>
 
-          <PasswordField
-            id="password"
-            label="Password"
-            placeholder="At least 8 characters"
-            autoComplete="new-password"
-            error={errors.password}
-            registration={register("password")}
-          />
+          <Field data-invalid={Boolean(errors.phone)}>
+            <FieldLabel htmlFor="phone">Phone</FieldLabel>
+            <Input
+              id="phone"
+              type="tel"
+              autoComplete="tel"
+              placeholder="0770649499"
+              spellCheck={false}
+              aria-invalid={Boolean(errors.phone)}
+              aria-describedby={errors.phone ? "phone-error" : undefined}
+              className={inputClassName}
+              {...register("phone")}
+            />
+            <FieldError id="phone-error">{errors.phone?.message}</FieldError>
+          </Field>
 
-          <PasswordField
-            id="confirmPassword"
-            label="Confirm password"
-            placeholder="Repeat your password"
-            autoComplete="new-password"
-            error={errors.confirmPassword}
-            registration={register("confirmPassword")}
-          />
+          <FieldGroup className="flex flex-row gap-5">
+            <PasswordField
+              id="password"
+              label="Password"
+              placeholder="At least 8 characters"
+              autoComplete="new-password"
+              error={errors.password}
+              registration={register("password")}
+            />
+
+            <PasswordField
+              id="confirmPassword"
+              label="Confirm password"
+              placeholder="Repeat your password"
+              autoComplete="new-password"
+              error={errors.confirmPassword}
+              registration={register("confirmPassword")}
+            />
+          </FieldGroup>
 
           <Button
             type="submit"

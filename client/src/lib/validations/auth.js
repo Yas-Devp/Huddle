@@ -12,12 +12,26 @@ const newPasswordSchema = requiredPasswordSchema
   .min(8, "Password must be at least 8 characters")
   .max(72, "Password must be 72 characters or fewer");
 
-const usernameSchema = z
+const nomSchema = z
   .string()
   .trim()
   .min(3, "Username must be at least 3 characters")
   .max(24, "Username must be 24 characters or fewer")
-  .regex(/^[a-zA-Z0-9_]+$/, "Use letters, numbers, and underscores only");
+  .regex(/^[a-zA-Z]+$/, "Use letters, numbers, and underscores only");
+
+const prenomSchema = z
+  .string()
+  .trim()
+  .min(3, "Username must be at least 3 characters")
+  .max(24, "Username must be 24 characters or fewer")
+  .regex(/^[a-zA-Z]+$/, "Use letters, numbers, and underscores only");
+
+const phoneSchema = z
+  .string()
+  .trim()
+  .min(10, "Phone number must be at least 10 characters")
+  .max(10, "Phone number must be 10 characters or fewer")
+  .regex(/^[0-9]+$/, "Use numbers only");
 
 export const loginSchema = z.object({
   email: emailSchema,
@@ -27,8 +41,10 @@ export const loginSchema = z.object({
 
 export const registerSchema = z
   .object({
-    username: usernameSchema,
+    nom: nomSchema,
+    prenom: prenomSchema,
     email: emailSchema,
+    phone: phoneSchema,
     password: newPasswordSchema,
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })

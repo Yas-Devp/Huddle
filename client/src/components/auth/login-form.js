@@ -41,9 +41,13 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (value) => {
+    setStatus("");
     try {
-      const data = await login(value);
-      console.log("Login successful:", data);
+      const data = await login({
+        email: value.email,
+        password: value.password,
+      });
+      console.log("Login successful:", data.data.user);
       setStatus("Login successful!");
     } catch (error) {
       console.error("Login failed:", error);

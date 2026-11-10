@@ -3,17 +3,21 @@ import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import { prisma } from "./lib/prisma.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
 app.use(
   cors({
-    baseURL: "http://localhost:5000",
-    withCredentials: true,
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
   }),
 );
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 //auth
 app.use("/auth", authRoutes);

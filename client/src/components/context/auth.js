@@ -45,8 +45,10 @@ export function AuthProvider({ children }) {
         email: value.email,
         password: value.password,
       });
-      SetToken(response.data.token);
+      // SetToken(response.data.token);
       StorAuth(true);
+      setUser(response.data.user);
+      route.push("/me");
       return response;
     } catch (error) {
       StorAuth(false);
@@ -55,7 +57,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (value) => {
+  const signup = async (value) => {
     try {
       const response = await Connect_Auth.postRegister(value);
       route.push("/login");
@@ -103,7 +105,7 @@ export function AuthProvider({ children }) {
       value={{
         user,
         login,
-        register,
+        signup,
         // logout,
         checkAuth,
         isAuthenticated,
