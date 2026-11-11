@@ -32,8 +32,10 @@ export default function RegisterForm() {
     resolver: zodResolver(registerSchema),
     mode: "onTouched",
     defaultValues: {
-      username: "",
+      nom: "",
+      prenom: "",
       email: "",
+      phone: "",
       password: "",
       confirmPassword: "",
     },
@@ -42,18 +44,19 @@ export default function RegisterForm() {
   const onSubmit = async (value) => {
     setStatus("");
     try {
-      const data = await signup({
+      await signup({
         nom: value.nom,
         prenom: value.prenom,
         telephone: value.phone,
         email: value.email,
         password: value.password,
       });
-      console.log("Signup successful:", data);
-      setStatus("Signup successful!");
+      setStatus("Account created. Redirecting to sign in…");
     } catch (error) {
-      console.error("Signup failed:", error);
-      setStatus("Signup failed. Please check your credentials.");
+      setStatus(
+        error?.response?.data?.message ||
+          "Registration failed. Please check your details.",
+      );
     }
   };
 

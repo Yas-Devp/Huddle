@@ -3,10 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import { LuActivity } from "react-icons/lu";
+import UserAuth from "@/components/navbar/UserAuth";
+import { useAuth } from "@/components/context/auth";
 
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
@@ -31,11 +32,20 @@ const navLinkClass =
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { user, logout, isAuthenticated, isLoading } = useAuth();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   if (pathname === "/login" || pathname === "/register") {
     return null;
   }
+
+  const fullName =
+    [user?.prenom, user?.nom].filter(Boolean).join(" ") || "My account";
+
+  const handleMobileLogout = async () => {
+    setIsSheetOpen(false);
+    await logout();
+  };
 
   return (
     <header className="w-full px-4 pt-6 sm:px-6">
@@ -80,23 +90,29 @@ export default function Navbar() {
           <ModeToggle />
 
           <div className="hidden items-center gap-2 md:flex">
-            <Button
-              render={<Link href="/register" />}
-              nativeButton={false}
-              variant="secondary"
-              size="lg"
-              className="rounded-full px-5"
-            >
-              Register
-            </Button>
-            <Button
-              render={<Link href="/login" />}
-              nativeButton={false}
-              size="lg"
-              className="rounded-full px-5"
-            >
-              Login
-            </Button>
+            {!isLoading && !isAuthenticated && (
+              <>
+                <Button
+                  render={<Link href="/register" />}
+                  nativeButton={false}
+                  variant="secondary"
+                  size="lg"
+                  className="rounded-full px-5"
+                >
+                  Register
+                </Button>
+                <Button
+                  render={<Link href="/login" />}
+                  nativeButton={false}
+                  size="lg"
+                  className="rounded-full px-5"
+                >
+                  Login
+                </Button>
+              </>
+            )}
+
+            {isAuthenticated && <UserAuth />}
           </div>
 
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
@@ -138,30 +154,62 @@ export default function Navbar() {
               </nav>
 
               <SheetFooter>
-                <Button
-                  render={
-                    <Link
-                      href="/register"
-                      onClick={() => setIsSheetOpen(false)}
-                    />
-                  }
-                  nativeButton={false}
-                  variant="secondary"
-                  size="lg"
-                  className="w-full rounded-full"
-                >
-                  Register
-                </Button>
-                <Button
-                  render={
-                    <Link href="/login" onClick={() => setIsSheetOpen(false)} />
-                  }
-                  nativeButton={false}
-                  size="lg"
-                  className="w-full rounded-full"
-                >
-                  Login
-                </Button>
+                {isAuthenticated ? (
+                  <>
+                    <div className="rounded-xl border border-border bg-muted/50 px-3 py-2.5">
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {fullName}
+                      </p>
+                      {user?.email ? (
+                        <p className="truncate text-xs text-muted-foreground">
+                          {user.email}
+                        </p>
+                      ) : null}
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="lg"
+                      className="w-full rounded-full"
+                      onClick={handleMobileLogout}
+                    >
+                      <LogOut data-icon="inline-start" aria-hidden="true" />
+                      Log out
+                    </Button>
+                  </>
+                ) : (
+                  !isLoading && (
+                    <>
+                      <Button
+                        render={
+                          <Link
+                            href="/register"
+                            onClick={() => setIsSheetOpen(false)}
+                          />
+                        }
+                        nativeButton={false}
+                        variant="secondary"
+                        size="lg"
+                        className="w-full rounded-full"
+                      >
+                        Register
+                      </Button>
+                      <Button
+                        render={
+                          <Link
+                            href="/login"
+                            onClick={() => setIsSheetOpen(false)}
+                          />
+                        }
+                        nativeButton={false}
+                        size="lg"
+                        className="w-full rounded-full"
+                      >
+                        Login
+                      </Button>
+                    </>
+                  )
+                )}
               </SheetFooter>
             </SheetContent>
           </Sheet>

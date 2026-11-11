@@ -23,7 +23,7 @@ const inputClassName = "h-11 rounded-xl border-border bg-muted/50 px-3.5";
 export default function LoginForm() {
   const [status, setStatus] = useState("");
 
-  const { isAuthenticated, checkAuth, login } = useAuth();
+  const { login } = useAuth();
 
   const {
     control,
@@ -43,15 +43,16 @@ export default function LoginForm() {
   const onSubmit = async (value) => {
     setStatus("");
     try {
-      const data = await login({
+      await login({
         email: value.email,
         password: value.password,
       });
-      console.log("Login successful:", data.data.user);
       setStatus("Login successful!");
     } catch (error) {
-      console.error("Login failed:", error);
-      setStatus("Login failed. Please check your credentials.");
+      setStatus(
+        error?.response?.data?.message ||
+          "Login failed. Please check your credentials.",
+      );
     }
   };
 

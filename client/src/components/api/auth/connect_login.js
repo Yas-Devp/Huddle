@@ -8,9 +8,9 @@ export const Connect_Auth = {
   postRegister: async (data) => {
     return await Clientaxios.post("auth/register", data);
   },
-  //   postLogout: async () => {
-  //     return await Clientaxios.post("auth/logout");
-  //   },
+  postLogout: async () => {
+    return await Clientaxios.post("auth/logout");
+  },
   getMe: async () => {
     return await Clientaxios.get("auth/me");
   },

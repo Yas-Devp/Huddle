@@ -1,42 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/context/auth";
 
 export default function PageMe() {
-  const { isAuthenticated, checkAuth } = useAuth();
-
-  const [user, Setuser] = useState(null);
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      console.log("User is not authenticated. Redirecting to login page...");
+    if (!isLoading && !isAuthenticated) {
+      router.replace("/login");
     }
-    const fetchUser = async () => {
-      const data = await checkAuth();
-      console.log("User data:", data);
-      Setuser(data.user);
-    };
+  }, [isAuthenticated, isLoading, router]);
 
-    fetchUser();
-  }, [checkAuth]);
+  if (isLoading) {
+    return (
+      <div className="flex min-h-full items-center justify-center px-6 py-12">
+        <p className="text-sm text-muted-foreground">Loading your session…</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Create your account <br />
-          {isAuthenticated ? "Authenticated" : "Not Authenticated"}
+        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-foreground">
+          My account
         </h2>
 
-        {user && (
-          <div className="mt-6 text-center text-gray-600">
-            <p>Nom: {user.nom}</p>
-            <p>Prénom: {user.prenom}</p>
-            <p>Email: {user.email}</p>
-            <p>Téléphone: {user.telephone}</p>
-          </div>
-        )}
+        <div className="mt-6 text-center text-muted-foreground">
+          <p>Nom: {user.nom}</p>
+          <p>Prénom: {user.prenom}</p>
+          <p>Email: {user.email}</p>
+          <p>Téléphone: {user.telephone || "—"}</p>
+        </div>
       </div>
     </div>
   );

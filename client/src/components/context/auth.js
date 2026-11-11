@@ -11,33 +11,68 @@ import { Connect_Auth } from "@/components/api/auth/connect_login";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export const StateContext = createContext();
+export const StateContext = createContext(null);
+
+const getErrorMessage = (error, fallback) =>
+  error?.response?.data?.message || fallback;
 
 export function AuthProvider({ children }) {
-  const route = useRouter();
+  const router = useRouter();
 
   const [user, setUser] = useState(null);
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  //   useEffect(() => {
-  //     let cancelled = false;
-  //     Promise.resolve().then(() => {
-  //       if (!cancelled && localStorage.getItem("AUTHENTICATED") === "true") {
-  //         setIsAuthenticated(true);
-  //       }
-  //     });
-  //     return () => {
-  //       cancelled = true;
-  //     };
-  //   }, []);
+  const checkAuth = useCallback(async () => {
+    try {
+      const response = await Connect_Auth.getMe();
+      const currentUser = response.data?.user ?? null;
 
-  const StorAuth = (value) => {
-    setIsAuthenticated(value);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("AUTHENTICATED", value ? "true" : "false");
+      setUser(currentUser);
+      setIsAuthenticated(Boolean(currentUser));
+
+      return currentUser;
+    } catch (error) {
+      // A 401 here is expected when no cookie exists yet.
+      if (error?.response?.status !== 401) {
+        console.error("Session check failed:", error);
+      }
+
+      setUser(null);
+      setIsAuthenticated(false);
+
+      return null;
     }
-  };
+  }, []);
+
+  // Restore the session from the HttpOnly cookie once on mount.
+  useEffect(() => {
+    let cancelled = false;
+
+    const restoreSession = async () => {
+      try {
+        const response = await Connect_Auth.getMe();
+        if (cancelled) return;
+
+        const currentUser = response.data?.user ?? null;
+        setUser(currentUser);
+        setIsAuthenticated(Boolean(currentUser));
+      } catch {
+        if (cancelled) return;
+
+        setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    };
+
+    restoreSession();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const login = async (value) => {
     try {
@@ -45,14 +80,17 @@ export function AuthProvider({ children }) {
         email: value.email,
         password: value.password,
       });
-      // SetToken(response.data.token);
-      StorAuth(true);
-      setUser(response.data.user);
-      route.push("/me");
+
+      setUser(response.data?.user ?? null);
+      setIsAuthenticated(true);
+      toast.success("Welcome back!");
+      router.push("/");
+
       return response;
     } catch (error) {
-      StorAuth(false);
-      toast.error("Login failed. Please check your credentials.");
+      toast.error(
+        getErrorMessage(error, "Login failed. Please check your credentials."),
+      );
       throw error;
     }
   };
@@ -60,44 +98,36 @@ export function AuthProvider({ children }) {
   const signup = async (value) => {
     try {
       const response = await Connect_Auth.postRegister(value);
-      route.push("/login");
+
+      toast.success("Account created. Please sign in.");
+      router.push("/login");
+
       return response;
     } catch (error) {
-      StorAuth(false);
-      toast.error("Register failed. Please check your credentials.");
+      toast.error(
+        getErrorMessage(error, "Registration failed. Please try again."),
+      );
       throw error;
     }
   };
 
-  //   const logout = async () => {
-  //     StorAuth(false);
-  //     setUser(null);
-  //     route.push("/login");
-  //     try {
-  //       await Connect_Auth.postLogout();
-  //       toast.success("Logged out successfully.");
-  //     } catch {
-  //       toast.error("Logout failed. Please try again.");
-  //     }
-  //   };
-
-  const checkAuth = useCallback(async () => {
+  const logout = async () => {
     try {
-      const response = await Connect_Auth.getMe();
-      setUser(response.data);
-      StorAuth(true);
-      return response.data;
+      await Connect_Auth.postLogout();
+      toast.success("Logged out successfully.");
     } catch (error) {
-      setUser(null);
-      StorAuth(false);
-      throw error;
+      // A 401 means the cookie is already gone, so local logout can continue.
+      if (error?.response?.status !== 401) {
+        console.error("Logout failed:", error);
+        toast.error("Logout failed. Please try again.");
+        return;
+      }
     }
-  }, []);
 
-  const SetToken = (token) => {
-    if (token) {
-      localStorage.setItem("access_token", token);
-    }
+    setUser(null);
+    setIsAuthenticated(false);
+    router.push("/login");
+    router.refresh();
   };
 
   return (
@@ -106,9 +136,10 @@ export function AuthProvider({ children }) {
         user,
         login,
         signup,
-        // logout,
+        logout,
         checkAuth,
         isAuthenticated,
+        isLoading,
       }}
     >
       {children}
