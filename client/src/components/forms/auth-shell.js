@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "@/components/mode-toggle";
 
-import AuthVisual from "@/components/auth/auth-visual";
+import AuthVisual from "@/components/forms/auth-visual";
 
 export default function AuthShell({ children }) {
   return (

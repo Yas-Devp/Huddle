@@ -1,5 +1,5 @@
-import AuthShell from "@/components/auth/auth-shell";
-import LoginForm from "@/components/auth/login-form";
+import AuthShell from "@/components/forms/auth-shell";
+import LoginForm from "@/components/forms/login-form";
 
 export const metadata = {
   title: "Sign in | Huddle",

@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/components/context/auth";
 
-import PasswordField from "@/components/auth/password-field";
+import PasswordField from "@/components/forms/password-field";
 import { Button } from "@/components/ui/button";
 import {
   Field,
