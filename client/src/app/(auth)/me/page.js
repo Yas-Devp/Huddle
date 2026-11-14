@@ -20,6 +20,7 @@ import {
   Settings2,
   CircleCheck,
 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function PageMe() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -27,7 +28,8 @@ export default function PageMe() {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.replace("/login");
+      toast.error("You are not login in");
+      router.push("/login");
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -48,11 +50,11 @@ export default function PageMe() {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 lg:py-14">
+      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 ">
         {/* Top navigation */}
         <div className="mb-12 flex items-center justify-between">
           <button
-            onClick={() => router.back()}
+            onClick={() => router.replace("/")}
             className="flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -18,12 +18,21 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { loginSchema } from "@/lib/validations/auth";
 import { useAuth } from "@/components/context/auth";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const inputClassName = "h-11 rounded-xl border-border bg-muted/50 px-3.5";
 export default function LoginForm() {
   const [status, setStatus] = useState("");
 
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace("/me");
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   const {
     control,

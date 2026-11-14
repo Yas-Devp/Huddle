@@ -84,7 +84,7 @@ export function AuthProvider({ children }) {
       setUser(response.data?.user ?? null);
       setIsAuthenticated(true);
       toast.success("Welcome back!");
-      router.push("/");
+      router.replace("/");
 
       return response;
     } catch (error) {
