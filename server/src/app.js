@@ -1,12 +1,26 @@
 import express from "express";
 import cors from "cors";
-import userRoutes from "./routes/user.js";
+import userRoutes from "./routes/user.route.js";
+import authRoutes from "./routes/auth.route.js";
 import { prisma } from "./lib/prisma.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
+  }),
+);
 app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
+
+//auth
+app.use("/auth", authRoutes);
 
 app.get("/", async (req, res, next) => {
   try {
@@ -16,6 +30,13 @@ app.get("/", async (req, res, next) => {
         posX: true,
         posY: true,
         role: true,
+        workspace: {
+          select: {
+            nom: true,
+            description: true,
+            mapId: true,
+          },
+        },
         user: {
           select: {
             nom: true,

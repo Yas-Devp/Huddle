@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
-import PasswordField from "@/components/auth/password-field";
+import PasswordField from "@/components/forms/password-field";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,10 +17,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { loginSchema } from "@/lib/validations/auth";
+import { useAuth } from "@/components/context/auth";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const inputClassName = "h-11 rounded-xl border-border bg-muted/50 px-3.5";
 export default function LoginForm() {
   const [status, setStatus] = useState("");
+
+  const { login, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace("/me");
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   const {
     control,
@@ -37,13 +49,21 @@ export default function LoginForm() {
     },
   });
 
-  async function onSubmit() {
+  const onSubmit = async (value) => {
     setStatus("");
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    setStatus(
-      "Demo mode — your details were validated on the client, but sign-in is not connected to a backend yet.",
-    );
-  }
+    try {
+      await login({
+        email: value.email,
+        password: value.password,
+      });
+      setStatus("Login successful!");
+    } catch (error) {
+      setStatus(
+        error?.response?.data?.message ||
+          "Login failed. Please check your credentials.",
+      );
+    }
+  };
 
   return (
     <div>

@@ -1,5 +1,5 @@
-import AuthShell from "@/components/auth/auth-shell";
-import RegisterForm from "@/components/auth/register-form";
+import AuthShell from "@/components/forms/auth-shell";
+import RegisterForm from "@/components/forms/register-form";
 
 export const metadata = {
   title: "Create account | Huddle",
