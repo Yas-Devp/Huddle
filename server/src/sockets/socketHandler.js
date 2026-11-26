@@ -5,24 +5,41 @@ const players = {};
 export const socketHandler = (io) => {
     io.on("connection", (socket) => {
         console.log("[*] Client connected:", socket.id);
-
+        
         //player joins a workspace
-        socket.on("joinWorkspace", async ({ workspaceId, userId, userName }) => {
-            socket.join(`workspace_${workspaceId}`);
-            
+        socket.on("joinWorkspace", async ({ workspaceId }) => {
+            const id = Number(workspaceId);
+
+            const membership = await prisma.member.findUnique({
+                where: {
+                    userId_workspaceId: { userId: socket.data.userId, workspaceId: id },
+                },
+                include: { user: true },
+            });
+
+            if (!membership) {
+                socket.emit("joinError", { code: "FORBIDDEN" });
+                return;
+            }
+
+            socket.join(`workspace_${id}`);
+
             players[socket.id] = {
                 id: socket.id,
-                userId: userId,
-                userName: userName,
-                workspaceId: workspaceId,
-                x: 400,
-                y: 300,
-                anim: "idle-down"
+                userId: membership.userId,
+                userName: `${membership.user.nom} ${membership.user.prenom}`,
+                workspaceId: id,
+                x: membership.posX,
+                y: membership.posY,
+                anim: "idle-down",
             };
 
-            const roomPlayers = Object.values(players).filter(p => p.workspaceId === workspaceId);
+            const roomPlayers = Object.values(players).filter(
+                (p) => p.workspaceId === id
+            );
+
             socket.emit("currentPlayers", roomPlayers);
-            socket.to(`workspace_${workspaceId}`).emit("newPlayer", players[socket.id]);
+            socket.to(`workspace_${id}`).emit("newPlayer", players[socket.id]);
         });
 
         //player moves
