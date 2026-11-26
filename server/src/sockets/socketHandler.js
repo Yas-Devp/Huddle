@@ -6,7 +6,7 @@ export const socketHandler = (io) => {
     io.on("connection", (socket) => {
         console.log("[*] Client connected:", socket.id);
 
-        // 1. Player joins a workspace
+        //player joins a workspace
         socket.on("joinWorkspace", async ({ workspaceId, userId, userName }) => {
             socket.join(`workspace_${workspaceId}`);
             
@@ -25,7 +25,7 @@ export const socketHandler = (io) => {
             socket.to(`workspace_${workspaceId}`).emit("newPlayer", players[socket.id]);
         });
 
-        // 2. Player moves
+        //player moves
         socket.on("playerMovement", (movementData) => {
             if (players[socket.id]) {
                 players[socket.id].x = movementData.x;
@@ -36,7 +36,7 @@ export const socketHandler = (io) => {
             }
         });
 
-        // 3. Player disconnects
+        //player disconnects
         socket.on("disconnect", async () => {
             console.log("[*] Client disconnected:", socket.id);
             
