@@ -1,7 +1,7 @@
 import express from "express";
-import { register } from "../controller/register.controller.js";
-import { login } from "../controller/login.controller.js";
-import { logout } from "../controller/logout.controller.js";
+import { register } from "../controllers/register.controller.js";
+import { login } from "../controllers/login.controller.js";
+import { logout } from "../controllers/logout.controller.js";
 import { verifyToken } from "../middleware/auth.js";
 import { prisma } from "../lib/prisma.js";
 

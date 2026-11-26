@@ -1,0 +1,48 @@
+# Task: Rebuild Huddle Dashboard UI from Reference Screenshot
+
+You are working on the **Huddle** project. Your task is to rebuild the dashboard frontend in (`src/app/(auth)/dashbord/page.js`).
+
+## 1. CRITICAL RULES — READ FIRST
+
+**You must work exclusively on the frontend.**
+
+- DO NOT access, modify, refactor, or delete anything inside the `/server` directory.
+- DO NOT modify backend APIs, routes, controllers, middleware, database schemas, Prisma models, migrations, or authentication logic.
+- DO NOT modify existing API services or Axios configuration.
+- DO NOT change the existing authentication system.
+- DO NOT introduce new backend functionality.
+- DO NOT modify environment variables.
+- DO NOT rebuild the application architecture.
+
+Your responsibility is strictly to implement the dashboard UI.
+
+Before coding, inspect the existing frontend structure and understand its current components, styling conventions, routing, and dependencies.
+
+## 2. TECHNOLOGIES
+
+Use the existing frontend stack:
+
+- Next.js (App Router)
+- React
+- TypeScript or JavaScript, following the existing project convention.
+- Tailwind CSS
+- **shadcn/ui** for UI components.
+- Lucide React for icons.
+
+Prefer existing installed shadcn components. Reuse existing components whenever possible instead of creating unnecessary replacements.
+
+Useful shadcn components:
+- Button
+- Input
+- Avatar
+- DropdownMenu
+- Tooltip
+- Separator
+- Skeleton (if needed)
+
+## 3. DESIGN REFERENCE
+
+Use the attached screenshot as the primary visual reference.
+
+Reproduce its overall design and visual identity:
+

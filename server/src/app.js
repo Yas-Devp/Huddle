@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
-import { prisma } from "./lib/prisma.js";
+import workspaceRoutes from "./routes/workspace.route.js";
+import mapRoutes from "./routes/map.route.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -21,42 +22,27 @@ app.use(cookieParser());
 
 //auth
 app.use("/auth", authRoutes);
-
-app.get("/", async (req, res, next) => {
-  try {
-    const data = await prisma.member.findMany({
-      select: {
-        id: true,
-        posX: true,
-        posY: true,
-        role: true,
-        workspace: {
-          select: {
-            nom: true,
-            description: true,
-            mapId: true,
-          },
-        },
-        user: {
-          select: {
-            nom: true,
-            prenom: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    if (data.length === 0) {
-      return res.status(404).json({ message: "No members found" });
-    }
-
-    res.json({ message: "Express API is running", data });
-  } catch (err) {
-    next(err);
-  }
-});
+//workspace
+app.use("/workspaces", workspaceRoutes);
+//maps
+app.use("/maps", mapRoutes);
 
 app.use("/api/users", userRoutes);
+
+// 404
+app.use((req, res) => {
+  return res.status(404).json({ message: "Not found." });
+});
+
+// Central error handler: never leak stack traces or query details.
+app.use((error, req, res, next) => {
+  console.error("Unhandled request error:", error);
+
+  if (res.headersSent) {
+    return next(error);
+  }
+
+  return res.status(500).json({ message: "Internal server error." });
+});
 
 export default app;

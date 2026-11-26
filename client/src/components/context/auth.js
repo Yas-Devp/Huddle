@@ -7,7 +7,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Connect_Auth } from "@/components/api/auth/connect_login";
+import { Connect_Auth } from "@/components/router/connect_auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 

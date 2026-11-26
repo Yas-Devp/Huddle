@@ -30,7 +30,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.replace("/me");
+      router.replace("/dashbord");
     }
   }, [isAuthenticated, isLoading, router]);
 

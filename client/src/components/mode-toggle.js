@@ -3,6 +3,8 @@
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
+import { cn } from "cn";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function ModeToggle() {
+export function ModeToggle({ className, variant = "outline", size = "icon-lg" }) {
   const { setTheme } = useTheme();
 
   return (
@@ -20,9 +22,9 @@ export function ModeToggle() {
       <DropdownMenuTrigger
         render={
           <Button
-            variant="outline"
-            size="icon-lg"
-            className="relative rounded-full"
+            variant={variant}
+            size={size}
+            className={cn("relative rounded-full", className)}
             aria-label="Toggle theme"
           />
         }
@@ -39,6 +41,10 @@ export function ModeToggle() {
           <DropdownMenuItem onClick={() => setTheme("dark")}>
             <Moon />
             Dark
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("system")}>
+            <Monitor />
+            System
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

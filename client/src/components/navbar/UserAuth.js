@@ -28,7 +28,7 @@ function getInitials(user) {
   return initials || "HU";
 }
 
-export default function UserAuth() {
+export default function UserAuth({ showStatus = true }) {
   const { user, logout } = useAuth();
 
   const fullName =
@@ -39,11 +39,24 @@ export default function UserAuth() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<button type="button" />}>
+      <DropdownMenuTrigger
+        aria-label={`Open account menu for ${fullName}`}
+        render={
+          <button
+            type="button"
+            className="rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          />
+        }
+      >
         <Avatar size="lg" className="cursor-pointer">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-          <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+          <AvatarImage
+            src="https://github.com/shadcn.png"
+            alt={user ? fullName : "Huddle user"}
+          />
+          <AvatarFallback>{initials}</AvatarFallback>
+          {showStatus ? (
+            <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+          ) : null}
         </Avatar>
       </DropdownMenuTrigger>
 
@@ -67,7 +80,7 @@ export default function UserAuth() {
           <DropdownMenuItem render={<Link href="/me" />}>
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem render={<Link href="/" />}>
+          <DropdownMenuItem render={<Link href="/dashbord" />}>
             Dashboard
           </DropdownMenuItem>
         </DropdownMenuGroup>
