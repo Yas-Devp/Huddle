@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.js";
-import { createUniqueInvitation } from "../lib/invitations.js";
+import { createUniqueInvitation } from "../lib/tools/invitations.js";
 
 const MEMBER_PUBLIC_FIELDS = {
   id: true,

@@ -54,7 +54,7 @@ export default function PageMe() {
         {/* Top navigation */}
         <div className="mb-12 flex items-center justify-between">
           <button
-            onClick={() => router.replace("/")}
+            onClick={() => router.back()}
             className="flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />

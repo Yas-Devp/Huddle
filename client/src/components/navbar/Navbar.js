@@ -87,7 +87,8 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2 justify-self-end">
-          <ModeToggle />
+          <ModeToggle className={"invisible md:visible"} />
+          <UserAuth className={"md:hidden"} />
 
           <div className="hidden items-center gap-2 md:flex">
             {!isLoading && !isAuthenticated && (
@@ -156,7 +157,7 @@ export default function Navbar() {
               <SheetFooter>
                 {isAuthenticated ? (
                   <>
-                    <div className="rounded-xl border border-border bg-muted/50 px-3 py-2.5">
+                    {/* <div className="rounded-xl border border-border bg-muted/50 px-3 py-2.5">
                       <p className="truncate text-sm font-medium text-foreground">
                         {fullName}
                       </p>
@@ -165,17 +166,20 @@ export default function Navbar() {
                           {user.email}
                         </p>
                       ) : null}
+                    </div> */}
+                    <div className="flex gap-3">
+                      <ModeToggle />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="lg"
+                        className="w-[83%] rounded-full"
+                        onClick={handleMobileLogout}
+                      >
+                        <LogOut data-icon="inline-start" aria-hidden="true" />
+                        Log out
+                      </Button>
                     </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="lg"
-                      className="w-full rounded-full"
-                      onClick={handleMobileLogout}
-                    >
-                      <LogOut data-icon="inline-start" aria-hidden="true" />
-                      Log out
-                    </Button>
                   </>
                 ) : (
                   !isLoading && (

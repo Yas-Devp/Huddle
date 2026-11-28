@@ -28,7 +28,7 @@ function getInitials(user) {
   return initials || "HU";
 }
 
-export default function UserAuth({ showStatus = true }) {
+export default function UserAuth({ showStatus = true, className }) {
   const { user, logout } = useAuth();
 
   const fullName =
@@ -41,6 +41,7 @@ export default function UserAuth({ showStatus = true }) {
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label={`Open account menu for ${fullName}`}
+        className={className}
         render={
           <button
             type="button"
@@ -49,10 +50,7 @@ export default function UserAuth({ showStatus = true }) {
         }
       >
         <Avatar size="lg" className="cursor-pointer">
-          <AvatarImage
-            src="https://github.com/shadcn.png"
-            alt={user ? fullName : "Huddle user"}
-          />
+          <AvatarImage alt={user ? fullName : "Huddle user"} />
           <AvatarFallback>{initials}</AvatarFallback>
           {showStatus ? (
             <AvatarBadge className="bg-green-600 dark:bg-green-800" />

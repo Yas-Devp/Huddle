@@ -1,11 +1,14 @@
 "use client";
 
+import { useAuth } from "@/components/context/auth";
 import { useEffect, useRef } from "react";
 
 export default function WorkspaceMap({ people = [] }) {
   const mapContainerRef = useRef(null);
   const gameRef = useRef(null);
   const peopleRef = useRef(people);
+  const { user } = useAuth();
+  const name = user?.nom + " " + user?.prenom;
 
   // Keep people updated
   useEffect(() => {
@@ -58,7 +61,7 @@ export default function WorkspaceMap({ people = [] }) {
 
       gameRef.current = game;
 
-      game.scene.add("WorkspaceScene", new WorkspaceScene(), true, {
+      game.scene.add("WorkspaceScene", new WorkspaceScene(name), true, {
         people: peopleRef.current,
       });
     }

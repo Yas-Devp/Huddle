@@ -20,9 +20,10 @@ const LAYER_NAMES = [
 ];
 
 export class WorkspaceScene extends Phaser.Scene {
-  constructor() {
+  constructor(name) {
     super("WorkspaceScene");
 
+    this.name = name;
     this.player = null;
     this.cursors = null;
     this.wasd = null;
@@ -169,12 +170,18 @@ export class WorkspaceScene extends Phaser.Scene {
     this.player.play("idle-down");
 
     // Player name
-    this.nameLabel = this.add.text(this.player.x, this.player.y - 35, "You", {
-      fontSize: "12px",
-      color: "#ffffff",
-      backgroundColor: "#00000099",
-      padding: { x: 5, y: 3 },
-    });
+    this.nameLabel = this.add.text(
+      this.player.x,
+      this.player.y - 35,
+      this.name,
+      {
+        fontFamily: "Inter",
+        fontSize: "8px",
+        color: "#ffffff",
+        backgroundColor: "#00000099",
+        padding: { x: 5, y: 3 },
+      },
+    );
 
     this.nameLabel.setOrigin(0.5, 0.5);
     this.nameLabel.setDepth(10000);

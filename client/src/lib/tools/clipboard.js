@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 
-import { buildInviteUrl, formatInviteCode } from "@/lib/invite";
+import { buildInviteUrl, formatInviteCode } from "@/lib/tools/invite";
 
 async function writeToClipboard(text) {
   try {

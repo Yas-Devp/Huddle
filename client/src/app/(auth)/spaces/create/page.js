@@ -9,8 +9,8 @@ import { toast } from "sonner";
 import { Check, Copy, Link2 } from "lucide-react";
 
 import { CreateSchema } from "@/lib/validations/space";
-import { formatInviteCode } from "@/lib/invite";
-import { copyInviteLink, copyWorkspaceKey } from "@/lib/clipboard";
+import { formatInviteCode } from "@/lib/tools/invite";
+import { copyInviteLink, copyWorkspaceKey } from "@/lib/tools/clipboard";
 import { Connect_Dash } from "@/components/router/connect_dash";
 import { ModeToggle } from "@/components/mode-toggle";
 
@@ -35,8 +35,8 @@ function CreatedSpaceSummary({ created }) {
       </h1>
 
       <p className="mt-3 text-base leading-6 text-muted-foreground">
-        <span className="font-semibold text-foreground">{workspace.nom}</span> is
-        locked. Anyone you want inside needs the workspace key below.
+        <span className="font-semibold text-foreground">{workspace.nom}</span>{" "}
+        is locked. Anyone you want inside needs the workspace key below.
       </p>
 
       {code ? (

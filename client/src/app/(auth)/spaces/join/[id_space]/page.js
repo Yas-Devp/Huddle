@@ -19,10 +19,10 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 
-import IconRail from "./(components)/IconRail";
-import MediaBar from "./(components)/MediaBar";
-import WorkspaceMap from "./(components)/WorkspaceMap";
-import WorkspaceSidebar from "./(components)/WorkspaceSidebar";
+import IconRail from "./(components)/(sidebar)/IconRail";
+import MediaBar from "./(components)/(game)/MediaBar";
+import WorkspaceMap from "./(components)/(game)/WorkspaceMap";
+import WorkspaceSidebar from "./(components)/(sidebar)/WorkspaceSidebar";
 
 const ACTION_BUTTON =
   "grid size-9 place-items-center rounded-full border border-border bg-card/90 text-foreground shadow-lg backdrop-blur-md outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
@@ -240,7 +240,7 @@ function SpacePageContent() {
 
   return (
     <div className="flex h-dvh w-full overflow-hidden bg-background text-foreground">
-      <div className="hidden h-full shrink-0 lg:flex">
+      <div className="flex  h-full shrink-0 ">
         <IconRail
           displayName={displayName}
           inviteCode={invitation?.code}
@@ -250,7 +250,7 @@ function SpacePageContent() {
 
         <div
           className={cn(
-            "h-full overflow-hidden bg-card shadow-[6px_0_24px_rgba(0,0,0,.28)] transition-[width] duration-300 ease-out",
+            "h-full overflow-hidden bg-card shadow-[6px_0_24px_rgba(0,0,0,.28)] transition-[width] duration-300 ease-out hidden lg:flex",
             sidebarOpen ? "w-[280px]" : "w-0",
           )}
         >

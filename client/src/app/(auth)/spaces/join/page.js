@@ -133,9 +133,7 @@ function JoinSpaceForm() {
                 Ten characters. Lowercase and dashes are fine.
               </FieldDescription>
 
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />

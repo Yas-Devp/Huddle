@@ -1,6 +1,6 @@
 import { prisma } from "../lib/prisma.js";
-import { normalizeInviteCode } from "../lib/inviteCode.js";
-import { createUniqueInvitation } from "../lib/invitations.js";
+import { normalizeInviteCode } from "../lib/tools/inviteCode.js";
+import { createUniqueInvitation } from "../lib/tools/invitations.js";
 
 // One generic answer for every unusable key: wrong, expired, revoked or used
 // up. Telling them apart would let someone probe for valid codes.

@@ -24,17 +24,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Avatar,
-  AvatarBadge,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
 
-import { copyInviteLink } from "@/lib/clipboard";
+import { copyInviteLink } from "@/lib/tools/clipboard";
+import UserAuth from "@/components/navbar/UserAuth";
 
-const MENU_CLASS =
-  "w-64";
+const MENU_CLASS = "w-64";
 
 const RAIL_BUTTON =
   "relative grid size-9 place-items-center rounded-xl text-muted-foreground outline-none transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -51,7 +45,7 @@ export default function IconRail({
   return (
     <nav
       aria-label="Workspace shortcuts"
-      className="flex h-full w-14 shrink-0 flex-col items-center border-r border-border bg-background py-3"
+      className="flex h-full w-15 shrink-0 flex-col items-center border-r border-border bg-background py-3"
     >
       <Link
         href="/dashbord"
@@ -210,18 +204,7 @@ export default function IconRail({
           <Settings className="size-[18px]" aria-hidden="true" />
         </Link>
 
-        <Link
-          href="/me"
-          aria-label={`${displayName} — open your profile`}
-          title={`${displayName} — profile`}
-          className="relative mt-2 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-            <AvatarBadge className="bg-green-600 dark:bg-green-800" />
-          </Avatar>
-        </Link>
+        <UserAuth />
       </div>
     </nav>
   );

@@ -28,9 +28,9 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
+import { useAuth } from "@/components/context/auth";
 
-const MENU_CLASS =
-  "w-64";
+const MENU_CLASS = "w-64";
 
 const CONTROL_BUTTON =
   "grid size-9 place-items-center rounded-full text-primary outline-none transition-colors hover:bg-foreground/10 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card";
@@ -48,6 +48,20 @@ export default function MediaBar({ displayName = "Youmes" }) {
   const [floating, setFloating] = useState([]);
   const timers = useRef(new Set());
   const reactionCount = useRef(0);
+  const { user } = useAuth();
+
+  // name
+  function getInitials(user) {
+    const initials = [user?.prenom, user?.nom]
+      .filter(Boolean)
+      .map((part) => part.trim().charAt(0))
+      .join("")
+      .toUpperCase();
+
+    return initials || "HU";
+  }
+
+  const initials = getInitials(user);
 
   useEffect(() => {
     const pending = timers.current;
@@ -92,8 +106,8 @@ export default function MediaBar({ displayName = "Youmes" }) {
       <div className="flex items-center gap-1 rounded-full border border-border bg-card/95 p-1.5 shadow-[0_16px_44px_rgba(0,0,0,.25)] backdrop-blur-md">
         <div className="relative mr-1 ml-0.5">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage alt="@shadcn" />
+            <AvatarFallback className="text-xs">{initials}</AvatarFallback>
             <AvatarBadge className="bg-green-600 dark:bg-green-800" />
           </Avatar>
         </div>
@@ -108,9 +122,9 @@ export default function MediaBar({ displayName = "Youmes" }) {
             className={cn(CONTROL_BUTTON, !micOn && "text-rose-400")}
           >
             {micOn ? (
-              <Mic className="size-4" aria-hidden="true" />
+              <Mic className="size-4.5" aria-hidden="true" />
             ) : (
-              <MicOff className="size-4" aria-hidden="true" />
+              <MicOff className="size-4.5" aria-hidden="true" />
             )}
           </button>
           <DropdownMenu>
@@ -153,9 +167,9 @@ export default function MediaBar({ displayName = "Youmes" }) {
                 className="rounded-lg focus:bg-muted focus:text-foreground"
               >
                 {micOn ? (
-                  <MicOff className="size-3.5" aria-hidden="true" />
+                  <MicOff className="size-4.5" aria-hidden="true" />
                 ) : (
-                  <Mic className="size-3.5" aria-hidden="true" />
+                  <Mic className="size-4.5" aria-hidden="true" />
                 )}
                 {micOn ? "Mute microphone" : "Unmute microphone"}
               </DropdownMenuItem>
@@ -236,7 +250,7 @@ export default function MediaBar({ displayName = "Youmes" }) {
             title="Send a reaction"
             render={<button type="button" className={CONTROL_BUTTON} />}
           >
-            <Smile className="size-4" aria-hidden="true" />
+            <Smile className="size-4.5" aria-hidden="true" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             side="top"

@@ -29,11 +29,10 @@ import {
   AvatarGroup,
   AvatarGroupCount,
 } from "@/components/ui/avatar";
-import { formatInviteCode } from "@/lib/invite";
+import { formatInviteCode } from "@/lib/tools/invite";
 import { Connect_Dash } from "@/components/router/connect_dash";
 
-import { copyInviteLink, copyWorkspaceKey } from "@/lib/clipboard";
-import { SIDEBAR_PEOPLE } from "./data";
+import { copyInviteLink, copyWorkspaceKey } from "@/lib/tools/clipboard";
 
 function InviteCard({
   workspaceId,
@@ -251,8 +250,8 @@ export default function WorkspaceSidebar({
   const [offlineOpen, setOfflineOpen] = useState(true);
 
   const hasProvidedPeople = Array.isArray(people);
-  const onlineSource = hasProvidedPeople ? people : SIDEBAR_PEOPLE.online;
-  const offlineSource = hasProvidedPeople ? [] : SIDEBAR_PEOPLE.offline;
+  const onlineSource = hasProvidedPeople ? people : [];
+  const offlineSource = hasProvidedPeople ? [] : []; // you must keep all a count status offline - Probleme
 
   const normalizedQuery = query.trim().toLowerCase();
   const matches = (person) =>
@@ -329,7 +328,7 @@ export default function WorkspaceSidebar({
             <kbd className="rounded bg-muted px-1 py-0.5 font-sans text-[9px] font-medium leading-none text-muted-foreground ring-1 ring-border">
               Ctrl
             </kbd>
-            <kbd className="rounded bg-muted px-1 py-0.5 font-sans text-[9px] font-medium leading-none text-muted-foreground ring-1 ring-border">
+            <kbd className="rounded bg-muted px-1 py-0.5 mr-2 font-sans text-[9px] font-medium leading-none text-muted-foreground ring-1 ring-border">
               F
             </kbd>
           </InputGroupAddon>
@@ -360,7 +359,10 @@ export default function WorkspaceSidebar({
           </>
         ) : (
           <div className="mt-10 flex flex-col items-center gap-2 px-4 text-center">
-            <UserX className="size-6 text-muted-foreground" aria-hidden="true" />
+            <UserX
+              className="size-6 text-muted-foreground"
+              aria-hidden="true"
+            />
             <p className="text-[11px] font-medium text-muted-foreground">
               No one here by that name
             </p>
